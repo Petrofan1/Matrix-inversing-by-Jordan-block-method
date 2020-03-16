@@ -1,0 +1,171 @@
+\documentclass[14pt,a4paper, openany]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amsthm,amsmath,amssymb,amsfonts,textcomp,latexsym}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{color}
+\usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\usepackage{geometry} 
+\geometry{tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=1.5cm}
+
+\lstdefinestyle{mystyle}{
+backgroundcolor=\color{backcolour},
+commentstyle=\color{codegreen},
+keywordstyle=\color{magenta},
+numberstyle=\tiny\color{codegray},
+stringstyle=\color{codepurple},
+basicstyle=\ttfamily\footnotesize,
+breakatwhitespace=false,
+breaklines=true,
+captionpos=b,
+keepspaces=true,
+numbers=left,
+numbersep=5pt,
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+tabsize=2
+}
+
+\lstset{style=mystyle}
+\begin{document}
+\title{\textbf {Нахождение обратной матрицы блочным методом Жордана с выбором главного элемента по строке} }
+\author{Смирнов Георгий}
+\date{310 группа}
+\maketitle
+
+Дана матрица $A^{n \times n}$. Требуется найти обратную к ней матрицу $A^{-1}$, используя блочный метод Жордана с выбором главного элемента по строке.
+  Пусть $n = m \cdot l + s$. Тогда матрицу \textit{A} можно представить в виде:
+$$
+\left (
+\begin{matrix} 
+A_{11}^{m \times m} & A_{12}^{m \times m} & \ldots & A_{1l}^{m \times m} & A_{1,\ l+1}^{m \times s} \\
+A_{21}^{m \times m} & A_{22}^{m \times m} & \ldots & A_{2l}^{m \times m} & A_{2,\ l+1}^{m \times s} \\
+\vdots  & \vdots & \ddots & \vdots & \vdots \\
+A_{l1}^{m \times m} & A_{l2}^{m \times m} & \ldots & A_{ll}^{m \times m} & A_{l,\ l+1}^{m \times s} \\
+A_{l+1,\ 1}^{s \times m} & A_{l+1,\ 2}^{s \times m} & \ldots & A_{l+1,\ l}^{s \times m} & A_{l+1,\ l+1}^{s \times s}
+\end{matrix}
+\right )
+$$ \\
+Обратную матрицу находим, используя присоединённую матрицу $ B = E^{n \times n} $, так же разделённую на блоки.
+\paragraph{1. Блочный метод Жордана.}
+Все шаги метода Жордана будут описаны сначала для произвольного $ k =\ 1 \ldots l $. Шаги для $ k = l+1 $ будут описаны отдельно. Начинаем с $ k = 1 $:
+\begin{enumerate}
+\item В $k$-ой строке матрицы $ A $ с помощью обычного метода Жордана считаем обратные матрицы для тех блоков $A_{kj}^{m \times m}$ ($ j = k \ldots l $), для которых это возможно. Если нет обратимых блоков, метод не применим для заданного $ m $. Иначе выберем в качестве главного элемента $A_{kk}^{m \times m}$ такой блок $A_{kj}^{m \times m}$, 
+что норма $ \|(A_{kj}^{m \times m})^{-1}\| $ минимальна\footnote{ В качестве нормы матрицы \textit{A} принимаем $ \|A^{m \times m} \| := \max\limits_{i = 1,\ldots,m} \sum\limits_{j = 1}^m |a_{ij}| $}. Для этого меняем $k$-й и $j$-й столбцы матрицы \textit{A} (столбцы матрицы \textit{B} на данном этапе не меняем).
+\item Для $j =\ k+1 \ldots l $ умножаем блоки $ A_{kj}^{m \times m}$ слева на $(A_{kk}^{m \times m})^{-1}$, а для  $j=l+1$ умножаем блок $A_{k,\ l+1}^{m \times s}$ слева на $(A_{kk}^{m \times m})^{-1}$:\\ \\$ A_{kj}^{m \times m} \ \longrightarrow \ (A_{kk}^{m \times m})^{-1} \times A_{kj}^{m \times m}$\\
+$A_{k,\ l+1}^{m \times s} \ \longrightarrow \ (A_{kk}^{m \times m})^{-1} \times A_{k,\ l+1}^{m \times s}$
+\item Для $j =\ 1 \ldots l $ умножаем блоки $ B_{kj}^{m \times m}$ слева на $(A_{kk}^{m \times m})^{-1}$, а для  $j=l+1$ умножаем блок $B_{k,\ l+1}^{m \times s}$ слева на $(A_{kk}^{m \times m})^{-1}$:\\ \\ $ B_{kj}^{m \times m} \ \longrightarrow \ (A_{kk}^{m \times m})^{-1} \times B_{kj}^{m \times m}$\\
+$B_{k,\ l+1}^{m \times s} \ \longrightarrow \ (A_{kk}^{m \times m})^{-1} \times B_{k,\ l+1}^{m \times s}$
+\item Для $i =\ 1 \ldots k-1,\ k+1, \ldots l+1 $ в матрицах \textit{A} и \textit{B} из $i$-той строки вычитаем $k$-ую, умноженную на $A _{ik}^{m \times m}$: \\
+$$
+\begin{array}{l l l}
+i =\ 1 \ldots k-1,\ k+1, \ldots l, & j =\ k+1 \ldots l
+  & \quad A _{ij}^{m \times m} \longrightarrow (A _{ij}^{m \times m} - A _{ik}^{m \times m} \times  A _{kj}^{m \times m}) \\
+ & j = l+1  &  \quad A _{i,\ l+1}^{m \times s} \longrightarrow (A _{i,\ l+1}^{m \times s} - A _{ik}^{m \times m} \times  A _{k,\ l+1}^{m \times s}) \\
+i = l+1, &  j =\ k \ldots l
+  & \quad A _{l+1,\ j}^{s \times m} \longrightarrow (A _{l+1,\ j}^{s \times m} - A _{l+1,\ k}^{s \times m} \times  A _{kj}^{m \times m}) \\
+ & j = l+1  & \quad A _{l+1,\ l+1}^{s \times s} \longrightarrow (A _{l+1,\ l+1}^{s \times s} - A _{l+1,\ k}^{s \times m} \times  A _{k,\ l+1}^{m \times s})
+\end{array}
+$$
+$$
+\begin{array}{l l l}
+i =\ 1 \ldots k-1,\ k+1, \ldots l, & j =\ 1 \ldots l
+  & \quad B _{ij}^{m \times m} \longrightarrow (B _{ij}^{m \times m} - A _{ik}^{m \times m} \times  B _{kj}^{m \times m}) \\
+ & j = l+1  &  \quad B _{i,\ l+1}^{m \times s} \longrightarrow (B _{i,\ l+1}^{m \times s} - A _{ik}^{m \times m} \times  B _{k,\ l+1}^{m \times s}) \\
+i = l+1, &  j =\ 1 \ldots l
+  & \quad B _{l+1,\ j}^{s \times m} \longrightarrow (B _{l+1,\ j}^{s \times m} - A _{l+1,\ k}^{s \times m} \times  B _{kj}^{m \times m}) \\
+ & j = l+1  & \quad B _{l+1,\ l+1}^{s \times s} \longrightarrow (B _{l+1,\ l+1}^{s \times s} - A _{l+1,\ k}^{s \times m} \times  B _{k,\ l+1}^{m \times s}) 
+\end{array}
+$$
+\item Если $ k \neq l $ увеличиваем $k$ на $1$ и переходим к $1$-ому шагу. Иначе переходим на $6$-ой шаг.
+\item С помощью обычного метода Жордана находим $ (A_{l+1,\ l+1}^{s \times s})^{-1} $. Если блок необратим, то метод не применим для заданного $ m $.
+\item Для $j = 1 \ldots l $ умножаем блоки $ B_{l+1,\ j}^{s \times m}$ слева на $(A_{l+1,\ l+1}^{s \times s})^{-1}$, для  $j=l+1$ умножаем блок $B_{l+1,\ l+1}^{s \times s}$ слева на $(A_{l+1,\ l+1}^{s \times s})^{-1} $: \\ \\ $ B_{l+1,\ j}^{s \times m} \ \longrightarrow \ (A_{l+1,\ l+1}^{s \times s})^{-1} \times B_{l+1,\ j}^{s \times m}$\\
+$B_{l+1,\ l+1}^{s \times s} \ \longrightarrow \ (A_{l+1,\ l+1}^{s \times s})^{-1} \times B_{l+1,\ l+1}^{s \times s}$
+\item Для $i =\ 1 \ldots l$ в матрице \textit{B} из $i$-той строки вычитаем ($l+1$)-ую, умноженную на $A _{i,\ l+1}^{m \times s}$: \\
+$$
+\begin{array}{l l l}
+i =\ 1 \ldots l, & j =\ 1 \ldots l
+  & \quad B _{ij}^{m \times m} \longrightarrow (B _{ij}^{m \times m} - A _{i,\ l+1}^{m \times s} \times  B _{l+1,\ j}^{s \times m}) \\
+ & j = l+1  &  \quad B _{i,\ l+1}^{m \times s} \longrightarrow (B _{i,\ l+1}^{m \times s} - A _{i,\ l+1}^{m \times s} \times  B _{l+1,\ l+1}^{s \times s}) \\
+\end{array}
+$$
+\end{enumerate}
+
+\noindent\rule{\textwidth}{1pt}
+\indent В результате вышепредставленных шагов получим следующую матрицу:\\
+$$
+\left (
+\begin{matrix} 
+E_{11}^{m \times m} & 0 & \ldots & 0 & 0 \\
+0 & E_{22}^{m \times m} & \ldots & 0 & 0 \\
+\vdots  & \vdots & \ddots & \vdots & \vdots \\
+0 & 0 & \ldots & E_{ll}^{m \times m} & 0 \\
+0 & 0 & \ldots & 0 & E_{l+1,\ l+1}^{s \times s}
+\end{matrix}
+\right .
+\left |
+\begin{matrix} 
+\tilde B_{11}^{m \times m} & \tilde B_{12}^{m \times m} & \ldots & \tilde B_{1l}^{m \times m} & \tilde B_{1,\ l+1}^{m \times s} \\
+\tilde B_{21}^{m \times m} & \tilde B_{22}^{m \times m} & \ldots & \tilde B_{2l}^{m \times m} & \tilde B_{2,\ l+1}^{m \times s} \\
+\vdots  & \vdots & \ddots & \vdots & \vdots \\
+\tilde B_{l1}^{m \times m} & \tilde B_{l2}^{m \times m} & \ldots & \tilde B_{ll}^{m \times m} & \tilde B_{l,\ l+1}^{m \times s} \\
+\tilde B_{l+1,\ 1}^{s \times m} & \tilde B_{l+1,\ 2}^{s \times m} & \ldots & \tilde B_{l+1,\ l}^{s \times m} & \tilde B_{l+1,\ l+1}^{s \times s}
+\end{matrix}
+\right )
+$$\\
+\indent Если бы мы искали матрицу, обратную к матрице $A$, методом Жордана с выбором главного элемента по столбцу, переставляя только строки матрицы $A$, в правой части мы получили бы обратную матрицу. Однако в методе Жордана с выбором главного элемента по строке в матрице $A$ мы переставляем не строки, а столбцы. Пусть $U_1, U_2,\ldots, U_l$ - элементарные матрицы, соответствующие перестановкам столбцов. Тогда перестановки столбцов меняют матрицу следующим образом:\\ \\
+$A \longrightarrow AU_1\ldots U_l$\\ \\
+Так как $AU_1\ldots U_l = E$, то
+$(AU_1\ldots U_l)^{-1} = U_l^{-1}\ldots U_1^{-1}A^{-1} = E$.
+Откуда обратная матрица равна $A^{-1} = U_1\ldots U_l$. 
+Следовательно, чтобы получить ответ, необходимо поменять у матрицы $\tilde B$ строки так, как у матрицы $A$ менялись столбцы: \\ \\
+$A^{-1} = U_1\ldots U_l\tilde B$. \\
+\newpage
+\paragraph{2. Функции getBlock и putBlock.}$ $
+
+\begin{lstlisting}[language = C++]
+void getBlock(const double *matrix, double *block, int start, int rows, int columns, int n)
+{
+	for(int i=0; i<rows; i++)
+	{
+		for(int j=0; j<columns; j++)
+		{
+			block[j+columns*i]=matrix[start+j+n*i];
+		}
+	}
+}
+void putBlock(double *matrix, const double *block, int start, int rows, int columns, int n)
+{
+	for(int i=0; i<rows; i++)
+	{
+		for(int j=0; j<columns; j++)
+		{
+			matrix[start+j+n*i]=block[j+columns*i];
+		}
+	}
+}
+
+\end{lstlisting}
+\paragraph{3. Оценка числа операций.}
+\begin{enumerate}
+\item Для нахождения обратной $m\times m$ матрицы обычным методом Жордана требуется порядка $ 3m^3\ -\ \frac{m^2}{2}\ -\frac{m}{2}$ операций.
+\item Количество операций для умножения двух матриц $m\times m$:  $m\cdot m\cdot(m\ +\ m\ -\ 1) = 2m^3\ -\ m^2$.
+\item Количество операций для умножения двух матриц $m\times s$ и $s\times m$:  $m\cdot m\cdot(s+s-1) = 2m^2s - m^2$.
+\item Количество операций для умножения двух матриц $m\times m$ и $m\times s$: $m\cdot s\cdot(m\ +\ m\ -\ 1) = 2m^2s\ -\ ms$.
+\item Количество операций для всех обращений в методе Жордана порядка: $(\sum\limits_{i=0}^{l\ -\ 1}(3m^3\ -\ \frac{m^2}{2}\ -\frac{m}{2})\cdot (l\ -\ i)) + (3s^3\ -\ \frac{s^2}{2}\ -\frac{s}{2})\ =\ (3m^3\ -\ \frac{m^2}{2}\ -\frac{m}{2})\cdot \frac {(l^2\ +\ l)}{2}\ +\ (3s^3\ -\ \frac{s^2}{2}\ -\frac{s}{2})$
+\item Количество операций при реализации умножения матриц в пунктах 2, 3 и 7: $(\sum\limits_{i=1}^{l}(l\ +\ l\ -\ i)\cdot (2m^3\ -\ m^2))\ +\ (l + l)\cdot (2m^2s\ -\ ms)\ +\ l\cdot (2s^2m\ - ms)\ +\ 2s^3\ -\ s^2\ =\ (\sum\limits_{i=1}^{l}(2l\ -\ i)\cdot (2m^3\ -\ m^2))\ +\ 2l\cdot (2m^2s\ -\ ms)\ +\ l\cdot (2s^2m\ - ms)\ +\ 2s^3\ -\ s^2\ $
+\item Количество операций при реализации пунктов 4 и 8: $(\sum\limits_{i=1}^l((l\ -\ 1)\cdot (l\ +\ l\ -\ i)\cdot (2m^3\ -\ m^2)\ +\ (l\ -\ 1)\cdot (l\ +\ l\ -\ i)\cdot m\cdot m\ +\ (l\ -\ 1)\cdot (2sm^2\ -\ sm)\cdot 2\ +\ (l\ -\ 1)\cdot 2sm)\ +\ (l\ +\ l\ -\ i)\cdot (2sm^2\ -\ ms)\ +\ (l\ +\ l\ -\ i)\cdot ms\ +\ 2\cdot (2ms^2\ -\ s^2)\ +\ 2\cdot s^2)\ +\ l^2\cdot (2m^2s\ -\ m^2)\ +\ l^2\cdot m^2\ =\ (\sum\limits_{i=1}^l(l\ -\ 1)\cdot ((2l\ -\ i)\cdot 2m^3\ +\ 4sm^2)\ +\ 2(2l\ -\ i)\cdot sm^2\ +\ 4ms^2)\ +\ 2sl^2m^2\ +\ 2lms^2 $ 
+\item Суммируем результаты, полученные в пунктах 5, 6, 7 этого параграфа: $(3m^3\ -\ \frac{m^2}{2}\ -\frac{m}{2})\cdot \frac {(l^2\ +\ l)}{2}\ +\ (3s^3\ -\ \frac{s^2}{2}\ -\frac{s}{2})\ +\ (\sum\limits_{i=1}^{l}(2l\ -\ i)\cdot (2m^3\ -\ m^2))\ +\ 2l\cdot (2m^2s\ -\ ms)\ +\ l\cdot (2s^2m\ - ms)\ +\ 2s^3\ -\ s^2\ +\ (\sum\limits_{i=1}^l(l\ -\ 1)\cdot ((2l\ -\ i)\cdot 2m^3\ +\ 4sm^2)\ +\ 2(2l\ -\ i)\cdot sm^2\ +\ 4ms^2)\ +\ 2sl^2m^2\ +\ 2lms^2\ =\ m^3\cdot (0.5l^2 +1.5l+3l^3)\ +\ m^2\cdot (\frac{l-7l^2}{4}\ +\ 5ls\ +\ 6sl^3\ -\ 3sl^2)\ +\ m\cdot (-0.25l^2\ -\ 0.25l\ -\ 3ls\ +\ 8ls^2)\ +\ 5s^3\ -\ 1.5s^2\ -\ 0.5s $ 
+\item Для $m\ =\ 1$ количество операций порядка: $3n^3 + O(n^2)$.
+\item Для $m\ =\ n$ количество операций порядка: $5n^3 + O(n^2)$
+
+\end{enumerate}
+
+\end{document}
+
