@@ -1,4 +1,4 @@
-OPT = -ffast-math -O3 -march=native
+OPT = -ffast-math -O3 -march=native -p
 a.out: main.o functions.o
 	mpicxx $(OPT) Zhordan_Main_MPI.o Zhordan_Functions_MPI.o  
 main.o: Zhordan_Main_MPI.cpp Zhordan_Header_MPI.hpp

@@ -9,12 +9,12 @@
 
 using namespace std;
 
-#define SETW_CONSTANT 12	//количество печатаемых символов для элементов матрицы
-#define EPS 1e-15               //эпсилон
-#define PRINT_CONSTANT 10	//размера печатаемой части матрицы
+#define SETW_CONSTANT 13	//количество печатаемых символов для элементов матрицы
+#define EPS 1e-17           //эпсилон
+#define PRINT_CONSTANT 8	//размера печатаемой части матрицы
 #define TYPE_OF_MATRIX 1   	//матричная формула: 	0 -- единичная
-                                //                      1 -- |i - j|
-                                //                      2 -- Гильберт
+                            //                      1 -- |i - j|
+                            //                      2 -- Гильберт
 struct buffer{
     double value;
     int index;
@@ -33,14 +33,15 @@ void swapColumn(double* block, int i, int j, int n);
 void swapRows(double* block, int i, int j, int n);
 void swapRowsInArray(int* array, int i, int j);
 int blockInverse(double* block, int* temp2,  double* id, int n, double norm);
-int readMatrixFromFile(double* matrix, double* row, int n, int m, int p, int my_rank, char* file_name);
-void createMatrix(double* matrix, int n, int m, int p, int my_rank, int type);
+int readMatrixFromFileMPI(double* matrix, double* row, int n, int m, int p, int my_rank, char* file_name);
+void createMatrixFormula(double* matrix, int n, int m, int p, int my_rank, int type);
+int createMatrix(double* matrix, double* row, int n, int m, int p, int my_rank, int file_or_formula, char* file_name);
 void MPINorm(double* matrix, double* row, int n, int m, int my_rank, int p, double* norm);
 void printMatrixMPI(double* matrix, int my_rank, int p, int n, int m, double* row);
 int matrixInverseMPI(double* matrix, double* id, double* row_a, double* row_b, double norm, int n, int m, int p, int my_rank);
 void findMinElementMPI(int i, int n, int m, int p, int my_rank, double norm, int* main_index, double* main_value, double* row, int* swap_in_block, double* inv_block, double* block);
 void swapMatrixColumnMPI(int n, int m, int p, int my_rank, int i, int j, double* matrix);
 void findIndexOfMainElement(double* invec, double* inoutvec, int* len, MPI_Datatype* dtype);
-double residualMPI();
-
-
+double residualMPI(double* matrix, double* id, double* row, int n, int m, int my_rank, int p, int max_rows, int file_or_formula, char* file_name);
+void makeRowsMatrix(double *matrix, double *e, int n, int m, int my_rank, int p);
+void blockMinusId(double* block, int m);
